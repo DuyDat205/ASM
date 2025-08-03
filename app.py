@@ -43,11 +43,18 @@ sns.boxplot(data=filtered, x='Month', y='Sales', order=sorted(filtered['Month'].
 ax4.set_title("Monthly Sales Distribution")
 st.pyplot(fig4)
 
+# 5. Bar Chart: Average Sales on Holiday vs Non-Holiday Weeks
 st.subheader("5. Average Weekly Sales: Holiday vs Non-Holiday")
+
+# Kiểm tra và sinh cột 'Holiday_Week' nếu chưa có
 if 'Holiday_Week' not in df.columns:
     df['Holiday_Week'] = df['Date'].dt.month.isin([1, 12]).astype(int)
+
+# Tính trung bình
 holiday_avg = df.groupby('Holiday_Week')['Sales'].mean().reset_index()
 holiday_avg['Week_Type'] = holiday_avg['Holiday_Week'].map({0: 'Non-Holiday Week', 1: 'Holiday Week'})
+
+# Vẽ biểu đồ
 fig5, ax5 = plt.subplots()
 sns.barplot(data=holiday_avg, x='Week_Type', y='Sales', palette='pastel', ax=ax5)
 ax5.set_title('Average Weekly Sales: Holiday vs Non-Holiday')
@@ -56,6 +63,7 @@ ax5.set_ylabel('Average Sales')
 ax5.grid(axis='y', linestyle='--', alpha=0.5)
 plt.tight_layout()
 st.pyplot(fig5)
+
 
 fig5, ax5 = plt.subplots()
 sns.lineplot(data=filtered, x='Date', y='Sales', label='Actual', ax=ax5)
