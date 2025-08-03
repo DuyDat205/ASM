@@ -43,13 +43,19 @@ sns.boxplot(data=filtered, x='Month', y='Sales', order=sorted(filtered['Month'].
 ax4.set_title("Monthly Sales Distribution")
 st.pyplot(fig4)
 
-st.subheader("5. Linear Regression Forecast")
-X = filtered[['Week_Index']]
-y = filtered['Sales']
-model = LinearRegression()
-model.fit(X, y)
-filtered['Predicted_Sales'] = model.predict(X)
-rmse = mean_squared_error(y, filtered['Predicted_Sales'], squared=False)
+st.subheader("5. Average Weekly Sales: Holiday vs Non-Holiday")
+if 'Holiday_Week' not in df.columns:
+    df['Holiday_Week'] = df['Date'].dt.month.isin([1, 12]).astype(int)
+holiday_avg = df.groupby('Holiday_Week')['Sales'].mean().reset_index()
+holiday_avg['Week_Type'] = holiday_avg['Holiday_Week'].map({0: 'Non-Holiday Week', 1: 'Holiday Week'})
+fig5, ax5 = plt.subplots()
+sns.barplot(data=holiday_avg, x='Week_Type', y='Sales', palette='pastel', ax=ax5)
+ax5.set_title('Average Weekly Sales: Holiday vs Non-Holiday')
+ax5.set_xlabel('Week Type')
+ax5.set_ylabel('Average Sales')
+ax5.grid(axis='y', linestyle='--', alpha=0.5)
+plt.tight_layout()
+st.pyplot(fig5)
 
 fig5, ax5 = plt.subplots()
 sns.lineplot(data=filtered, x='Date', y='Sales', label='Actual', ax=ax5)
